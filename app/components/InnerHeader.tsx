@@ -9,11 +9,11 @@ const nav = [
   ["Кейсы", "/kejsy"],
   ["О компании", "/o-kompanii"],
   ["Этапы работы", "/etapy-raboty"],
-  ["Калькулятор", "/kalkulyator"],
+  ["Калькулятор лидов", "/kalkulyator"],
   ["FAQ", "/voprosy"],
   ["Контакты", "/kontakty"],
 ];
-const desktopNav = nav.filter(([label]) => ["Услуги", "Кейсы", "О компании", "Контакты"].includes(label));
+const desktopNav = nav.filter(([label]) => ["Услуги", "Кейсы", "Калькулятор лидов", "О компании", "Контакты"].includes(label));
 
 export function InnerHeader() {
   const [menu, setMenu] = useState(false);
