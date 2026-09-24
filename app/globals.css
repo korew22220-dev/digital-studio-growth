@@ -41,7 +41,7 @@
 .directory-calculator .calc-grid{min-width:0}
 .calc-inputs{align-content:start}
 .calc-help{grid-column:1/-1;margin:0;color:#5b675b;font-size:13px;line-height:1.55}
-.field span{font-size:14px;line-height:1.4}
+.field span{font-size:14px;line-height:1.4;color:var(--ink);font-weight:700}
 .field input{min-height:46px;font-size:16px}
 .calc-result .eyebrow{font-size:11px}
 .result-main small{font-size:14px}
