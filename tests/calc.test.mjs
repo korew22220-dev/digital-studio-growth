@@ -1,0 +1,12 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { calculateMetrics } from "../lib/calc.mjs";
+const standard = { leadsPerMonth:80, averageCheck:12000, conversion:12, packagePrice:45000, months:3 };
+test("standard estimate",()=>assert.deepEqual(calculateMetrics(standard),{totalLeads:240,sales:28.8,revenue:345600,costPerLead:187.5,spendShare:13.020833333333334}));
+test("zero leads avoids division by zero",()=>assert.deepEqual(calculateMetrics({...standard,leadsPerMonth:0}),{totalLeads:0,sales:0,revenue:0,costPerLead:null,spendShare:null}));
+test("zero revenue shows no spend share",()=>assert.equal(calculateMetrics({...standard,averageCheck:0}).spendShare,null));
+test("zero advertising budget gives zero CPL",()=>assert.equal(calculateMetrics({...standard,packagePrice:0}).costPerLead,0));
+test("negative values are rejected",()=>assert.equal(calculateMetrics({...standard,months:-1}),null));
+test("zero conversion",()=>assert.deepEqual(calculateMetrics({...standard,conversion:0}),{totalLeads:240,sales:0,revenue:0,costPerLead:187.5,spendShare:null}));
+test("100 percent conversion",()=>assert.equal(calculateMetrics({...standard,conversion:100}).sales,240));
+test("no result contains NaN or Infinity",()=>{for(const result of [calculateMetrics(standard),calculateMetrics({...standard,leadsPerMonth:0}),calculateMetrics({...standard,averageCheck:0})]) for(const value of Object.values(result)) assert.ok(value===null||Number.isFinite(value));});
