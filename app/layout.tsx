@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description: "Продвижение бизнеса в 2ГИС и Яндекс Картах, геомаркетинг и разработка сайтов под ключ. Работаем с компаниями по всей России.",
   metadataBase: new URL(siteUrl),
   icons: {
-    icon: `${basePath}/favicon.svg`,
-    shortcut: `${basePath}/favicon.svg`,
+    icon: `${basePath}/koremo-icon.svg`,
+    shortcut: `${basePath}/koremo-icon.svg`,
   },
 };
 
