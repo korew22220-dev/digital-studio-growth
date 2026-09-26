@@ -51,3 +51,14 @@
 .calc-result>p{font-size:12px}
 @media(max-width:1000px){.directory-calculator{grid-template-columns:1fr;gap:28px}.directory-calculator-intro>p{max-width:620px}}
 @media(max-width:700px){.directory-grid.services-directory{padding-top:38px;padding-bottom:38px}.services-directory .service-directory-card{min-height:220px;padding:21px;gap:12px 14px}.services-directory .service-directory-card>p{font-size:14px}.directory-calculator{padding:68px 24px;gap:24px}.directory-calculator .calc-grid{grid-template-columns:1fr}.directory-calculator .calc-inputs{grid-template-columns:1fr 1fr}.directory-calculator .calc-help{grid-column:1/-1}}
+
+/* Positioning and readable FAQ on its light background. */
+.home-hero h1{font-size:clamp(36px,4.7vw,70px);line-height:1.04;letter-spacing:-.055em}
+.inner-faq{color:var(--ink)}
+.inner-faq summary,.inner-faq summary span,.inner-faq summary b{color:var(--ink)}
+.inner-faq summary span{flex:1;min-width:0}
+.inner-faq summary b{flex-shrink:0}
+.inner-faq summary:focus-visible{outline:2px solid #53634f;outline-offset:5px}
+.inner-faq details[open] summary b{transform:rotate(45deg)}
+.inner-faq details p{color:#455149}
+@media(max-width:700px){.home-hero h1{font-size:clamp(27px,8vw,52px)}}
