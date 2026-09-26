@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "@/app/components/SiteLink";
 import { ArrowUpRight } from "lucide-react";
+import { contactServiceOptions, mapTariffs } from "@/app/data/tariffs";
 
 const staticHosting = process.env.NEXT_PUBLIC_GITHUB_PAGES === "true";
 
@@ -9,6 +10,14 @@ export function ContactForm() {
   const [status, setStatus] = useState("");
   const [links, setLinks] = useState("");
   const [busy, setBusy] = useState(false);
+  const [service, setService] = useState(contactServiceOptions[0]);
+
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("service");
+    if (!requested || !contactServiceOptions.includes(requested)) return;
+    const frame = window.requestAnimationFrame(() => setService(requested));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   return (
     <form className="contact-form" onSubmit={async (event) => {
@@ -22,7 +31,9 @@ export function ContactForm() {
       const body = {
         name: String(values.get("name") || ""),
         phone: String(values.get("phone") || ""),
-        service: String(values.get("service") || ""),
+        service: String(values.get("service") || "") === mapTariffs[0].id
+          ? `${mapTariffs[0].id}: ${String(values.get("platform") || "2ГИС")}`
+          : String(values.get("service") || ""),
         task: String(values.get("task") || ""),
       };
       const message = `${body.name}\nТелефон: ${body.phone}\nУслуга: ${body.service}\nЗадача: ${body.task}`;
@@ -61,7 +72,8 @@ export function ContactForm() {
         <label>Ваше имя<input name="name" required maxLength={100} placeholder="Как к вам обращаться"/></label>
         <label>Телефон или мессенджер<input name="phone" type="tel" required maxLength={40} placeholder="+7 (___) ___-__-__"/></label>
       </div>
-      <label>Какая услуга интересует<select name="service" defaultValue="Продвижение в 2ГИС"><option>Продвижение в 2ГИС</option><option>Яндекс Карты</option><option>Разработка сайта</option><option>Интернет-реклама</option><option>Аудит или консультация</option></select></label>
+      <label>Какая услуга интересует<select name="service" value={service} onChange={event => setService(event.target.value)}>{contactServiceOptions.map(option => <option key={option} value={option}>{option}</option>)}</select></label>
+      {service === mapTariffs[0].id && <label>Площадка для оформления<select name="platform" defaultValue="2ГИС"><option>2ГИС</option><option>Яндекс Карты</option></select></label>}
       <label>Коротко о задаче<textarea name="task" rows={3} maxLength={1000} placeholder="Что хотите улучшить или создать?"/></label>
       <label className="consent"><input required type="checkbox"/>Согласен(на) на обработку персональных данных согласно <Link href="/privacy">политике конфиденциальности</Link></label>
       <button className="button button-lime" type="submit" disabled={busy}>{busy ? "Отправляем…" : "Отправить заявку"} <ArrowUpRight size={18}/></button>
