@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "@/app/components/SiteLink";
+import { Brand } from "@/app/components/Brand";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 
@@ -29,8 +30,7 @@ export function InnerHeader() {
   return <>
     <header className="inner-header">
       <Link href="/" className="brand">
-        <span className="brand-mark">D<span>·</span></span>
-        <span>DIGITAL<br/>STUDIO</span>
+        <Brand/>
       </Link>
       <nav>{desktopNav.map(([label, href]) => <Link href={href} key={href}>{label}</Link>)}</nav>
       <Link href="/kontakty" className="header-cta">Обсудить проект <ArrowUpRight size={16}/></Link>
