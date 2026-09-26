@@ -5,7 +5,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://digital-studio-growth.korew22220.chatgpt.site";
 
 export const metadata: Metadata = {
-  title: "Digital Studio — продвижение в картах и сайты для бизнеса",
+  title: "KOREMO — продвижение в картах и сайты для бизнеса",
   description: "Продвижение бизнеса в 2ГИС и Яндекс Картах, геомаркетинг и разработка сайтов под ключ. Работаем с компаниями по всей России.",
   metadataBase: new URL(siteUrl),
   icons: {
