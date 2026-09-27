@@ -7,8 +7,8 @@ import { MapArtwork } from "@/app/components/Visuals";
 import { MercedesProjectCard } from "@/app/components/MercedesProjectCard";
 import { adsTariff, bundleTariff, mapTariffs, siteTariffs, tariffPrice } from "@/app/data/tariffs";
 const services=[
- {n:"01",title:"Продвижение в 2ГИС",text:"Оформление карточки организации.",price:tariffPrice(mapTariffs[0]),href:"/uslugi/prodvizhenie-2gis",icon:MapPin,theme:"green"},
- {n:"02",title:"Яндекс Карты",text:"Оформление карточки организации.",price:tariffPrice(mapTariffs[0]),href:"/uslugi/yandex-karty",icon:Compass,theme:"cream"},
+ {n:"01",title:"Продвижение в 2ГИС",text:"Упаковка карточки организации.",price:tariffPrice(mapTariffs[0]),href:"/uslugi/prodvizhenie-2gis",icon:MapPin,theme:"green"},
+ {n:"02",title:"Яндекс Карты",text:"Упаковка карточки организации.",price:tariffPrice(mapTariffs[0]),href:"/uslugi/yandex-karty",icon:Compass,theme:"cream"},
  {n:"03",title:"Сайты под ключ",text:"Структура, дизайн и адаптивная разработка.",price:tariffPrice(siteTariffs[0]),href:"/uslugi/sozdanie-saitov",icon:Layers3,theme:"blue"},
  {n:"04",title:"Интернет-реклама",text:"Управление платным продвижением.",price:tariffPrice(adsTariff),href:"/uslugi/reklama",icon:MousePointer2,theme:"coral"},
 ];
