@@ -28,9 +28,9 @@ export function SitePricing() {
 }
 
 export function MapPricing({ platform }: { platform?: "2ГИС" | "Яндекс Карты" }) {
-  const singleService = platform === "2ГИС" ? "Оформление карточки в 2ГИС" : platform === "Яндекс Карты" ? "Оформление карточки в Яндекс Картах" : mapTariffs[0].id;
+  const singleService = platform === "2ГИС" ? "Упаковка карточки в 2ГИС" : platform === "Яндекс Карты" ? "Упаковка карточки в Яндекс Картах" : mapTariffs[0].id;
   return <section className="pricing-section pricing-section-cream" id="map-tariffs">
-    <div className="pricing-heading"><span className="eyebrow">2ГИС И ЯНДЕКС КАРТЫ / ОФОРМЛЕНИЕ</span><h2>Карточки, в которых <em>всё на месте.</em></h2><p>Можно оформить одну выбранную площадку или обе сразу. Материалы и фотографии предоставляет клиент.</p></div>
+    <div className="pricing-heading"><span className="eyebrow">2ГИС И ЯНДЕКС КАРТЫ / УПАКОВКА</span><h2>Карточки, в которых <em>всё на месте.</em></h2><p>Можно упаковать карточку на одной выбранной площадке или обе сразу. Материалы и фотографии предоставляет клиент.</p></div>
     <div className="tariff-grid tariff-grid-two">
       <TariffCard tariff={mapTariffs[0]} service={singleService}/>
       <TariffCard tariff={mapTariffs[1]} note={`Экономия ${formatPrice(mapSaving)}: по отдельности две карточки стоят ${formatPrice(mapSeparatePrice)}.`}/>
@@ -50,7 +50,7 @@ export function MonthlyPricing({ advertisingOnly = false }: { advertisingOnly?: 
 }
 
 export function MapFollowup() {
-  return <section className="pricing-followup"><div><span className="eyebrow">ПОСЛЕ ОФОРМЛЕНИЯ</span><h2>Нужна регулярная <em>работа?</em></h2><p>Сопровождение карточек — {tariffPrice(careTariff)}. Управление рекламой — {tariffPrice(adsTariff)}, бюджет площадки отдельно. Услуги вместе — от {formatPrice(monthlyCombinedFrom)}/мес.</p></div><div className="pricing-followup-links"><Link href="/uslugi#monthly-tariffs">Все условия сопровождения <ArrowUpRight size={17}/></Link><Link href="/uslugi/biznes-v-onlayne">Сайт и две карточки — {tariffPrice(bundleTariff)} <ArrowUpRight size={17}/></Link></div></section>;
+  return <section className="pricing-followup"><div><span className="eyebrow">ПОСЛЕ УПАКОВКИ</span><h2>Нужна регулярная <em>работа?</em></h2><p>Сопровождение карточек — {tariffPrice(careTariff)}. Управление рекламой — {tariffPrice(adsTariff)}, бюджет площадки отдельно. Услуги вместе — от {formatPrice(monthlyCombinedFrom)}/мес.</p></div><div className="pricing-followup-links"><Link href="/uslugi#monthly-tariffs">Все условия сопровождения <ArrowUpRight size={17}/></Link><Link href="/uslugi/biznes-v-onlayne">Сайт и две карточки — {tariffPrice(bundleTariff)} <ArrowUpRight size={17}/></Link></div></section>;
 }
 
 export function BundlePricing({ compact = false }: { compact?: boolean }) {
@@ -63,7 +63,7 @@ export function BundlePricing({ compact = false }: { compact?: boolean }) {
       <Link className="button button-lime" href={contactHref(bundleTariff.id)}>{bundleTariff.cta} <ArrowUpRight size={17}/></Link>
       {compact && <Link className="bundle-details-link" href="/uslugi/biznes-v-onlayne">Подробно о пакете <ArrowUpRight size={16}/></Link>}
     </div>
-    {!compact && <div className="bundle-includes"><span className="eyebrow">ЧТО ВЫ ПОЛУЧАЕТЕ</span><p className="bundle-composition">Продающий сайт от {formatPrice(siteTariffs[1].price)} + оформление двух карточек за {formatPrice(mapTariffs[1].price)}.</p><ul>{bundleTariff.includes.map(item => <li key={item}><Check size={16} aria-hidden="true"/>{item}</li>)}</ul><div className="bundle-care">Дальнейшее сопровождение карточек — {formatPrice(careTariff.price)}/мес. Оформляется отдельно и не входит в первоначальную стоимость пакета.</div></div>}
+    {!compact && <div className="bundle-includes"><span className="eyebrow">ЧТО ВЫ ПОЛУЧАЕТЕ</span><p className="bundle-composition">Продающий сайт от {formatPrice(siteTariffs[1].price)} + упаковка карточек на двух площадках за {formatPrice(mapTariffs[1].price)}.</p><ul>{bundleTariff.includes.map(item => <li key={item}><Check size={16} aria-hidden="true"/>{item}</li>)}</ul><div className="bundle-care">Дальнейшее сопровождение карточек — {formatPrice(careTariff.price)}/мес. Оформляется отдельно и не входит в первоначальную стоимость пакета.</div></div>}
   </section>;
 }
 
