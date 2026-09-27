@@ -35,11 +35,12 @@ export function ContactForm() {
           ? `${mapTariffs[0].id}: ${String(values.get("platform") || "2ГИС")}`
           : String(values.get("service") || ""),
         task: String(values.get("task") || ""),
+        url: String(values.get("url") || ""),
       };
-      const message = `${body.name}\nТелефон: ${body.phone}\nУслуга: ${body.service}\nЗадача: ${body.task}`;
+      const message = `${body.name}\nТелефон: ${body.phone}\nУслуга: ${body.service}${body.url ? `\nСсылка: ${body.url}` : ""}\nЗадача: ${body.task}`;
 
       if (staticHosting) {
-        setStatus("Чтобы отправить заявку, выберите мессенджер. Данные не отправляются автоматически.");
+        setStatus("Сообщение подготовлено. Выберите мессенджер, адресата и отправьте его самостоятельно. Форма не доставила заявку KOREMO.");
         setLinks(message);
         setBusy(false);
         return;
@@ -74,15 +75,17 @@ export function ContactForm() {
       </div>
       <label>Какая услуга интересует<select name="service" value={service} onChange={event => setService(event.target.value)}>{contactServiceOptions.map(option => <option key={option} value={option}>{option}</option>)}</select></label>
       {service === mapTariffs[0].id && <label>Площадка для оформления<select name="platform" defaultValue="2ГИС"><option>2ГИС</option><option>Яндекс Карты</option></select></label>}
+      {service === "Предварительный аудит" && <label>Ссылка на сайт или карточку организации<input name="url" type="url" required maxLength={500} placeholder="https://example.ru"/></label>}
       <label>Коротко о задаче<textarea name="task" rows={3} maxLength={1000} placeholder="Что хотите улучшить или создать?"/></label>
-      <label className="consent"><input required type="checkbox"/>Согласен(на) на обработку персональных данных согласно <Link href="/privacy">политике конфиденциальности</Link></label>
-      <button className="button button-lime" type="submit" disabled={busy}>{busy ? "Отправляем…" : "Отправить заявку"} <ArrowUpRight size={18}/></button>
+      <label className="consent"><input required type="checkbox"/>Я ознакомился(лась) с <Link href="/privacy">информацией об обработке данных</Link> и понимаю, что данные будут включены в подготовленное сообщение.</label>
+      <button className="button button-lime" type="submit" disabled={busy}>{busy ? "Подождите…" : staticHosting ? "Подготовить обращение" : "Отправить заявку"} <ArrowUpRight size={18}/></button>
       <p aria-live="polite">{status || (staticHosting
-        ? "После отправки можно будет передать заявку через Telegram или WhatsApp."
+        ? "После подготовки сообщения выберите адресата и отправьте его сами. Автоматическая отправка заявки на этом сайте не подключена."
         : "Заявка отправится в Telegram, если интеграция настроена. Иначе можно будет отправить её вручную.")}</p>
       {links && <div className="send-links">
-        <a target="_blank" rel="noreferrer" href={`https://t.me/share/url?url=&text=${encodeURIComponent(links)}`}>Telegram ↗</a>
-        <a target="_blank" rel="noreferrer" href={`https://wa.me/?text=${encodeURIComponent(links)}`}>WhatsApp ↗</a>
+        <p>Эти ссылки открывают окно общего доступа. Выберите контакт KOREMO и подтвердите отправку в мессенджере.</p>
+        <a target="_blank" rel="noreferrer" href={`https://t.me/share/url?url=&text=${encodeURIComponent(links)}`}>Открыть Telegram для ручной отправки ↗</a>
+        <a target="_blank" rel="noreferrer" href={`https://wa.me/?text=${encodeURIComponent(links)}`}>Открыть WhatsApp для ручной отправки ↗</a>
       </div>}
     </form>
   );

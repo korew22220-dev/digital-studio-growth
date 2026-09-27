@@ -8,13 +8,13 @@ import { ArrowUpRight, Menu, X } from "lucide-react";
 const nav = [
   ["Услуги", "/uslugi"],
   ["Кейсы", "/kejsy"],
-  ["О компании", "/o-kompanii"],
+  ["О KOREMO", "/o-kompanii"],
   ["Этапы работы", "/etapy-raboty"],
   ["Калькулятор лидов", "/kalkulyator"],
   ["FAQ", "/voprosy"],
   ["Контакты", "/kontakty"],
 ];
-const desktopNav = nav.filter(([label]) => ["Услуги", "Кейсы", "Калькулятор лидов", "О компании", "Контакты"].includes(label));
+const desktopNav = nav.filter(([label]) => ["Услуги", "Кейсы", "О KOREMO", "Контакты"].includes(label));
 
 export function InnerHeader() {
   const [menu, setMenu] = useState(false);

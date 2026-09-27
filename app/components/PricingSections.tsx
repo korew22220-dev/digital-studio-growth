@@ -16,6 +16,7 @@ function TariffCard({ tariff, service, note }: { tariff: Tariff; service?: strin
     <div className="tariff-card-price"><strong>{tariffPrice(tariff)}</strong>{tariff.duration && <span>Срок: {tariff.duration}</span>}</div>
     {note && <p className="tariff-card-note">{note}</p>}
     <ul>{tariff.includes.map(item => <li key={item}><Check size={16} aria-hidden="true"/>{item}</li>)}</ul>
+    {tariff.outcome && <p className="tariff-outcome"><b>Что получает клиент</b>{tariff.outcome}</p>}
     <Link className={`button ${tariff.featured ? "button-lime" : "tariff-button"}`} href={contactHref(service || tariff.id)}>{tariff.cta} <ArrowUpRight size={17}/></Link>
   </article>;
 }

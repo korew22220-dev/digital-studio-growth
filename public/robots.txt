@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://korew22220-dev.github.io/digital-studio-growth/sitemap.xml
