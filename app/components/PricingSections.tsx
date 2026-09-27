@@ -50,7 +50,7 @@ export function MonthlyPricing({ advertisingOnly = false }: { advertisingOnly?: 
 }
 
 export function MapFollowup() {
-  return <section className="pricing-followup"><div><span className="eyebrow">ПОСЛЕ УПАКОВКИ</span><h2>Нужна регулярная <em>работа?</em></h2><p>Сопровождение карточек — {tariffPrice(careTariff)}. Управление рекламой — {tariffPrice(adsTariff)}, бюджет площадки отдельно. Услуги вместе — от {formatPrice(monthlyCombinedFrom)}/мес.</p></div><div className="pricing-followup-links"><Link href="/uslugi#monthly-tariffs">Все условия сопровождения <ArrowUpRight size={17}/></Link><Link href="/uslugi/biznes-v-onlayne">Сайт и две карточки — {tariffPrice(bundleTariff)} <ArrowUpRight size={17}/></Link></div></section>;
+  return <section className="pricing-followup"><div><span className="eyebrow">ПОСЛЕ УПАКОВКИ</span><h2>Нужна регулярная <em>работа?</em></h2><p>Сопровождение карточек — {tariffPrice(careTariff)}. Управление платным продвижением — {tariffPrice(adsTariff)}, бюджет площадки отдельно. Услуги вместе — от {formatPrice(monthlyCombinedFrom)}/мес.</p></div><div className="pricing-followup-links"><Link href="/uslugi#monthly-tariffs">Все условия сопровождения <ArrowUpRight size={17}/></Link><Link href="/uslugi/biznes-v-onlayne">Сайт и две карточки — {tariffPrice(bundleTariff)} <ArrowUpRight size={17}/></Link></div></section>;
 }
 
 export function BundlePricing({ compact = false }: { compact?: boolean }) {
