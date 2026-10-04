@@ -4,8 +4,10 @@ import path from "node:path";
 const output = path.resolve(process.argv[2] || "dist/client");
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH;
 
-if (!basePath?.startsWith("/") || basePath === "/" || basePath.endsWith("/")) {
-  throw new Error("NEXT_PUBLIC_BASE_PATH must be a repository path such as /digital-studio-growth.");
+// Custom domains publish at the origin; repository sites use a path prefix.
+
+if (basePath === undefined || (basePath !== "" && (!basePath.startsWith("/") || basePath === "/" || basePath.endsWith("/")))) {
+  throw new Error("NEXT_PUBLIC_BASE_PATH must be empty for a custom domain or a repository path such as /digital-studio-growth.");
 }
 
 async function listFiles(directory) {

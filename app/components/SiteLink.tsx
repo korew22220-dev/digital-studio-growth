@@ -6,7 +6,8 @@ type SiteLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
 export default function SiteLink({ href, ...props }: SiteLinkProps) {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
   let publishedHref = href;
-  if (basePath && href.startsWith("/") && !href.startsWith("//")) {
+  const staticHosting = process.env.NEXT_PUBLIC_GITHUB_PAGES === "true";
+  if ((basePath || staticHosting) && href.startsWith("/") && !href.startsWith("//")) {
     const match = href.match(/^([^?#]*)(.*)$/);
     const pathname = match?.[1] || href;
     const suffix = match?.[2] || "";
