@@ -19,8 +19,24 @@ jobs:
           import json
           import re
           import socket
+          import subprocess
           import urllib.request
           import urllib.parse
+
+          for server, host, kind in [
+              ("a.dns.ripn.net", "koremo.ru", "NS"),
+              ("ns1.reg.ru", "koremo.ru", "A"),
+              ("ns2.reg.ru", "koremo.ru", "A"),
+              ("ns1.reg.ru", "www.koremo.ru", "CNAME"),
+          ]:
+              try:
+                  result = subprocess.run(
+                      ["dig", "@" + server, host, kind, "+norecurse", "+time=3", "+tries=1", "+noall", "+answer", "+authority", "+comments"],
+                      capture_output=True, text=True, timeout=12,
+                  )
+                  print("AUTHORITATIVE", server, host, kind, result.returncode, result.stdout.strip(), result.stderr.strip(), flush=True)
+              except Exception as error:
+                  print("AUTHORITATIVE ERROR", server, type(error).__name__, str(error), flush=True)
 
           for host, kinds in [
               ("koremo.ru", ["NS", "A", "AAAA", "CAA"]),
