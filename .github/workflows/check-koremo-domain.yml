@@ -1,0 +1,57 @@
+name: Check KOREMO domain
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [".github/workflows/check-koremo-domain.yml"]
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check public DNS and HTTP endpoints
+        shell: python
+        run: |
+          import json
+          import re
+          import socket
+          import urllib.request
+          import urllib.parse
+
+          for host, kinds in [
+              ("koremo.ru", ["NS", "A", "AAAA", "CAA"]),
+              ("www.koremo.ru", ["CNAME", "A"]),
+          ]:
+              for kind in kinds:
+                  query = urllib.parse.urlencode({"name": host, "type": kind})
+                  try:
+                      with urllib.request.urlopen("https://dns.google/resolve?" + query, timeout=12) as response:
+                          answer = json.load(response)
+                      print("DNS", host, kind, json.dumps({
+                          "status": answer.get("Status"),
+                          "answers": answer.get("Answer", []),
+                          "authority": answer.get("Authority", []),
+                      }), flush=True)
+                  except Exception as error:
+                      print("DNS ERROR", host, kind, type(error).__name__, str(error), flush=True)
+
+          for host in ["koremo.ru", "www.koremo.ru"]:
+              try:
+                  addresses = sorted({entry[4][0] for entry in socket.getaddrinfo(host, 443)})
+                  print("RUNNER DNS", host, addresses, flush=True)
+              except Exception as error:
+                  print("RUNNER DNS ERROR", host, type(error).__name__, str(error), flush=True)
+
+          for url in ["http://koremo.ru/", "https://koremo.ru/", "http://www.koremo.ru/", "https://www.koremo.ru/"]:
+              try:
+                  with urllib.request.urlopen(url, timeout=15) as response:
+                      html = response.read(2_000_000).decode("utf-8", errors="replace")
+                      title = re.search(r"<title[^>]*>(.*?)</title>", html, re.DOTALL | re.IGNORECASE)
+                      assets = re.findall(r'(?:src|href)="([^"]*?/_next/[^"]*)"', html)
+                      print("HTTP", url, response.status, "FINAL", response.url, "TITLE", title.group(1) if title else None, "ASSETS", sorted(set(assets)), flush=True)
+              except Exception as error:
+                  print("HTTP ERROR", url, type(error).__name__, str(error), flush=True)
