@@ -108,3 +108,41 @@ jobs:
               end
             end
           end.each(&:join)
+
+      - name: Compare every authoritative DNS address and RU delegation
+        shell: python
+        run: |
+          import concurrent.futures, json, socket, subprocess
+          tasks = []
+          for ns in ["ns1.reg.ru", "ns2.reg.ru"]:
+              ips = sorted({r[4][0] for r in socket.getaddrinfo(ns, 53, socket.AF_INET)})
+              print("AUTH_ADDRESSES", ns, ips, flush=True)
+              for ip in ips:
+                  for host, kind, tcp in [
+                      ("koremo.ru", "A", False), ("koremo.ru", "AAAA", False),
+                      ("koremo.ru", "CAA", False), ("koremo.ru", "NS", False),
+                      ("koremo.ru", "SOA", False), ("www.koremo.ru", "CNAME", False),
+                      ("www.koremo.ru", "CAA", False), ("koremo.ru", "CAA", True)
+                  ]:
+                      tasks.append((ip, host, kind, tcp))
+          roots = subprocess.check_output(["dig", "ru.", "NS", "+short"], text=True).split()
+          for ns in roots:
+              for kind in ["NS", "DS"]:
+                  tasks.append((ns, "koremo.ru", kind, False))
+          def check(task):
+              server, host, kind, tcp = task
+              args = ["dig", "@" + server, host, kind, "+norecurse", "+time=3", "+tries=1",
+                      "+noall", "+answer", "+authority", "+comments"]
+              if tcp:
+                  args.append("+tcp")
+              try:
+                  r = subprocess.run(args, capture_output=True, text=True, timeout=8)
+                  lines = [s.strip() for s in r.stdout.splitlines()
+                           if s and (not s.startswith(";") or "status:" in s or "flags:" in s or "error" in s)]
+                  return {"server":server,"host":host,"type":kind,"tcp":tcp,
+                          "exit":r.returncode,"answer":lines,"stderr":r.stderr.strip()}
+              except Exception as e:
+                  return {"server":server,"host":host,"type":kind,"tcp":tcp,"error":str(e)}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+              for answer in pool.map(check, tasks):
+                  print("DIRECT", json.dumps(answer), flush=True)
