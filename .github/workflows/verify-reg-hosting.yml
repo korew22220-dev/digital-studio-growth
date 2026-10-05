@@ -1,0 +1,52 @@
+name: Verify REG.RU website
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/verify-reg-hosting.yml
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify authoritative DNS, origin, public HTTPS and assets
+        run: |
+          python - <<'PY'
+          import urllib.request, urllib.error, ssl, socket, re, subprocess
+          from concurrent.futures import ThreadPoolExecutor
+          for ns in ('ns1.reg.ru','ns2.reg.ru','ns1.hosting.reg.ru','ns2.hosting.reg.ru'):
+              for name,kind in [('koremo.ru','A'),('www.koremo.ru','A'),('www.koremo.ru','CNAME'),('_acme-challenge.koremo.ru','TXT'),('_acme-challenge.www.koremo.ru','TXT')]:
+                  result=subprocess.run(['dig','@'+ns,name,kind,'+short','+time=3','+tries=1'],capture_output=True,text=True)
+                  print(ns,name,kind,result.stdout.strip() or result.stderr.strip(),flush=True)
+          for host in ('koremo.ru','www.koremo.ru'):
+              result=subprocess.run(['curl','--fail','--silent','--show-error','--max-time','20','--resolve',host+':443:31.31.196.115','-o','/dev/null','-w',host+' origin HTTPS %{http_code}\n','https://'+host+'/'],capture_output=True,text=True)
+              print(result.stdout+result.stderr,flush=True)
+              try:
+                  with socket.create_connection(('31.31.196.115',443),timeout=10) as sock:
+                      with ssl.create_default_context().wrap_socket(sock,server_hostname=host) as conn:
+                          cert=conn.getpeercert()
+                          print(host,'CERT',cert.get('issuer'),cert.get('notAfter'),cert.get('subjectAltName'),flush=True)
+              except Exception as exc: print(host,'CERT ERROR',str(exc),flush=True)
+          urls=['http://koremo.ru/','http://www.koremo.ru/','https://koremo.ru/','https://www.koremo.ru/','https://koremo.ru/uslugi.html','https://koremo.ru/kejsy/mercedes-amg.html','https://koremo.ru/kalkulyator.html','https://koremo.ru/kontakty.html','https://koremo.ru/robots.txt','https://koremo.ru/sitemap.xml']
+          errors=[]
+          def check(url):
+              try:
+                  with urllib.request.urlopen(url,timeout=20) as r:
+                      data=r.read()
+                      print(url,r.status,r.geturl(),'bytes',len(data),flush=True)
+                      if url=='https://koremo.ru/':
+                          text=data.decode()
+                          print('TITLE',re.findall(r'<title>(.*?)</title>',text),flush=True)
+                          return re.findall(r'(?:href|src)="([^"]+)"',text)
+                  return []
+              except Exception as exc:
+                  errors.append(url);print(url,'ERROR',str(exc),flush=True);return []
+          with ThreadPoolExecutor(max_workers=6) as pool:
+              results=list(pool.map(check,urls))
+          assets=set(u for links in results for u in links if u.startswith('/_next/'))
+          with ThreadPoolExecutor(max_workers=6) as pool:
+              list(pool.map(check,['https://koremo.ru'+u for u in assets]))
+          if errors: raise SystemExit('Failed URLs: '+', '.join(errors))
+          PY
