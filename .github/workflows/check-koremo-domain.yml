@@ -71,3 +71,40 @@ jobs:
                       print("HTTP", url, response.status, "FINAL", response.url, "TITLE", title.group(1) if title else None, "ASSETS", sorted(set(assets)), flush=True)
               except Exception as error:
                   print("HTTP ERROR", url, type(error).__name__, str(error), flush=True)
+
+      - name: Install GitHub's public Pages DNS checker
+        run: gem install github-pages-health-check --no-document --install-dir "$RUNNER_TEMP/koremo-dns-gems"
+      - name: Reproduce Pages checks across DNS resolvers
+        shell: ruby {0}
+        env:
+          GEM_HOME: ${{ runner.temp }}/koremo-dns-gems
+          GEM_PATH: ${{ runner.temp }}/koremo-dns-gems
+        run: |
+          require "github-pages-health-check"
+          require "json"
+          STDOUT.sync = true
+          puts "CHECKER_VERSION #{Gem.loaded_specs.fetch('github-pages-health-check').version}"
+          checks = ["koremo.ru", "www.koremo.ru"].product([:default, :public, ["ns1.reg.ru", "ns2.reg.ru"]])
+          checks.map do |host, servers|
+            Thread.new do
+              begin
+                domain = GitHubPages::HealthCheck::Domain.new(host, nameservers: servers)
+                records = %w[A AAAA CNAME MX NS SOA CAA DS].map do |kind|
+                  begin
+                    answer = domain.resolver.query(kind)
+                    {type: kind, answers: answer.map(&:to_s)}
+                  rescue StandardError => e
+                    {type: kind, error: e.class.name, message: e.message}
+                  end
+                end
+                puts JSON.generate(host: host, servers: servers, records: records)
+                valid = domain.valid?
+                puts JSON.generate(host: host, servers: servers, valid: valid,
+                  reason: domain.reason&.message, dns_resolves: domain.dns_resolves?,
+                  https_eligible: domain.https_eligible?, caa_error: domain.caa_error,
+                  served_by_pages: domain.served_by_pages?)
+              rescue StandardError => e
+                puts JSON.generate(host: host, servers: servers, error: e.class.name, message: e.message)
+              end
+            end
+          end.each(&:join)
