@@ -1,0 +1,47 @@
+name: Build REG.RU hosting archive
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: reg-hosting
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build static site for koremo.ru
+        run: pnpm build
+        env:
+          GITHUB_PAGES: "true"
+          NEXT_PUBLIC_GITHUB_PAGES: "true"
+          NEXT_PUBLIC_BASE_PATH: ""
+          NEXT_PUBLIC_SITE_URL: https://koremo.ru/
+      - name: Validate static files
+        run: node scripts/prepare-github-pages.mjs dist/client
+        env:
+          NEXT_PUBLIC_BASE_PATH: ""
+      - name: Pack hosting archive
+        run: |
+          cd dist/client
+          zip -qr ../../koremo-reg-hosting.zip .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: koremo-reg-hosting
+          path: koremo-reg-hosting.zip
+          retention-days: 30
+      - name: Check REG.RU origin before DNS switch
+        continue-on-error: true
+        run: |
+          for route in / /uslugi.html /kontakty.html /favicon.svg /sitemap.xml; do
+            curl --fail --silent --show-error --max-time 20 --resolve koremo.ru:80:31.31.196.115 -o /dev/null -w "$route HTTP %{http_code}\n" "http://koremo.ru$route"
+          done
