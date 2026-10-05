@@ -17,10 +17,10 @@ jobs:
           import urllib.request, urllib.error, ssl, socket, re, subprocess
           from concurrent.futures import ThreadPoolExecutor
           for ns in ('ns1.reg.ru','ns2.reg.ru','ns1.hosting.reg.ru','ns2.hosting.reg.ru'):
-              for name,kind in [('koremo.ru','A'),('www.koremo.ru','A'),('www.koremo.ru','CNAME'),('_acme-challenge.koremo.ru','TXT'),('_acme-challenge.www.koremo.ru','TXT')]:
+              for name,kind in [('koremo.ru','A'),('www.koremo.ru','A'),('www.koremo.ru','CNAME'),('koremo.online','A'),('www.koremo.online','A'),('koremo.online','NS'),('_acme-challenge.koremo.online','TXT'),('_acme-challenge.www.koremo.online','TXT'),('_acme-challenge.koremo.ru','TXT'),('_acme-challenge.www.koremo.ru','TXT')]:
                   result=subprocess.run(['dig','@'+ns,name,kind,'+short','+time=3','+tries=1'],capture_output=True,text=True)
                   print(ns,name,kind,result.stdout.strip() or result.stderr.strip(),flush=True)
-          for host in ('koremo.ru','www.koremo.ru'):
+          for host in ('koremo.ru','www.koremo.ru','koremo.online','www.koremo.online'):
               result=subprocess.run(['curl','--fail','--silent','--show-error','--max-time','20','--resolve',host+':443:31.31.196.115','-o','/dev/null','-w',host+' origin HTTPS %{http_code}\n','https://'+host+'/'],capture_output=True,text=True)
               print(result.stdout+result.stderr,flush=True)
               try:
@@ -29,12 +29,15 @@ jobs:
                           cert=conn.getpeercert()
                           print(host,'CERT',cert.get('issuer'),cert.get('notAfter'),cert.get('subjectAltName'),flush=True)
               except Exception as exc: print(host,'CERT ERROR',str(exc),flush=True)
-          urls=['http://koremo.ru/','http://www.koremo.ru/','https://koremo.ru/','https://www.koremo.ru/','https://koremo.ru/uslugi.html','https://koremo.ru/kejsy/mercedes-amg.html','https://koremo.ru/kalkulyator.html','https://koremo.ru/kontakty.html','https://koremo.ru/robots.txt','https://koremo.ru/sitemap.xml']
+          urls=['http://koremo.online/','http://www.koremo.online/','https://koremo.online/','https://www.koremo.online/','https://koremo.online/uslugi.html?check=online','https://www.koremo.online/uslugi.html?check=online','http://koremo.ru/','http://www.koremo.ru/','https://koremo.ru/','https://www.koremo.ru/','https://koremo.ru/uslugi.html','https://koremo.ru/kejsy/mercedes-amg.html','https://koremo.ru/kalkulyator.html','https://koremo.ru/kontakty.html','https://koremo.ru/robots.txt','https://koremo.ru/sitemap.xml']
           errors=[]
           def check(url):
               try:
                   with urllib.request.urlopen(url,timeout=20) as r:
                       data=r.read()
+                      if 'koremo.online' in url:
+                          expected='https://koremo.ru/'+('uslugi.html?check=online' if 'uslugi.html' in url else '')
+                          if r.geturl().replace(':443/','/') != expected: errors.append(url+' redirect mismatch '+r.geturl())
                       print(url,r.status,r.geturl(),'bytes',len(data),flush=True)
                       if url=='https://koremo.ru/':
                           text=data.decode()
