@@ -45,3 +45,11 @@ jobs:
           for route in / /uslugi.html /kontakty.html /favicon.svg /sitemap.xml; do
             curl --fail --silent --show-error --max-time 20 --resolve koremo.ru:80:31.31.196.115 -o /dev/null -w "$route HTTP %{http_code}\n" "http://koremo.ru$route"
           done
+      - name: Check TLS and public DNS
+        continue-on-error: true
+        run: |
+          for host in koremo.ru www.koremo.ru; do
+            dig +short "$host" A
+            curl --fail --silent --show-error --max-time 20 --resolve "$host:443:31.31.196.115" -o /dev/null -w "$host origin HTTPS %{http_code}\n" "https://$host/"
+            curl --fail --silent --show-error --max-time 20 -L -o /dev/null -w "$host public HTTPS %{http_code} %{url_effective}\n" "https://$host/"
+          done
