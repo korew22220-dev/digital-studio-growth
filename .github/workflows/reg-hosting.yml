@@ -30,6 +30,7 @@ jobs:
         run: node scripts/prepare-github-pages.mjs dist/client
         env:
           NEXT_PUBLIC_BASE_PATH: ""
+          NEXT_PUBLIC_SITE_URL: https://koremo.ru/
       - name: Pack hosting archive
         run: |
           cd dist/client

@@ -26,8 +26,16 @@ if (originalHtml.length < 10 || !originalHtml.includes(path.join(output, "index.
 // /route/ directly, including nested service and case pages.
 for (const file of originalHtml) {
   const source = await readFile(file, "utf8");
-  const html = source.replaceAll('"/_next/', `"${basePath}/_next/`);
+  let html = source.replaceAll('"/_next/', `"${basePath}/_next/`);
   if (path.basename(file) === "index.html") {
+    if (file === path.join(output, "index.html") && process.env.NEXT_PUBLIC_SITE_URL) {
+      const canonical = new URL(process.env.NEXT_PUBLIC_SITE_URL).href;
+      const tag = html.match(/<link rel="canonical" href="([^"]+)"/);
+      if (!tag || new URL(tag[1]).href !== canonical) {
+        throw new Error("Homepage canonical does not match NEXT_PUBLIC_SITE_URL.");
+      }
+      html = html.replace(tag[0], `<link rel="canonical" href="${canonical}"`);
+    }
     await writeFile(file, html);
     continue;
   }
