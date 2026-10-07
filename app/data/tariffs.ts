@@ -92,4 +92,4 @@ export const contactServiceOptions = [
   careTariff.id, adsTariff.id, bundleTariff.id,
 ];
 
-export const contactHref = (service: string) => `/kontakty?service=${encodeURIComponent(service)}`;
+export const contactHref = (service: string) => `/kontakty/?service=${encodeURIComponent(service)}`;

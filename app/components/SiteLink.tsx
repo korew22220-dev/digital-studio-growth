@@ -11,9 +11,7 @@ export default function SiteLink({ href, ...props }: SiteLinkProps) {
     const match = href.match(/^([^?#]*)(.*)$/);
     const pathname = match?.[1] || href;
     const suffix = match?.[2] || "";
-    const pagePath = pathname === "/" || pathname.endsWith(".html")
-      ? pathname
-      : `${pathname}.html`;
+    const pagePath = pathname === "/" ? pathname : `${pathname.replace(/\/+$/, "")}/`;
     publishedHref = `${basePath}${pagePath}${suffix}`;
   }
 

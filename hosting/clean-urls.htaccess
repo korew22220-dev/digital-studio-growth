@@ -1,0 +1,8 @@
+# Place these rules before any general HTTPS or host redirect in the site's
+# existing .htaccess. Keep the current domain and SSL rules in that file.
+RewriteEngine On
+
+# Redirect the old document URLs straight to their canonical HTTPS directories.
+RewriteRule ^(uslugi|geomarketing|o-kompanii|etapy-raboty|kalkulyator|voprosy|kontakty|kejsy|privacy)\.html$ https://koremo.ru/$1/ [R=301,L,NE]
+RewriteRule ^uslugi/(prodvizhenie-2gis|yandex-karty|sozdanie-saitov|reklama|biznes-v-onlayne)\.html$ https://koremo.ru/uslugi/$1/ [R=301,L,NE]
+RewriteRule ^kejsy/(mercedes-amg|geo-card|business-site)\.html$ https://koremo.ru/kejsy/$1/ [R=301,L,NE]

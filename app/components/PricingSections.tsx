@@ -51,7 +51,7 @@ export function MonthlyPricing({ advertisingOnly = false }: { advertisingOnly?: 
 }
 
 export function MapFollowup() {
-  return <section className="pricing-followup"><div><span className="eyebrow">ПОСЛЕ УПАКОВКИ</span><h2>Нужна регулярная <em>работа?</em></h2><p>Сопровождение карточек — {tariffPrice(careTariff)}. Управление платным продвижением — {tariffPrice(adsTariff)}, бюджет площадки отдельно. Услуги вместе — от {formatPrice(monthlyCombinedFrom)}/мес.</p></div><div className="pricing-followup-links"><Link href="/uslugi#monthly-tariffs">Все условия сопровождения <ArrowUpRight size={17}/></Link><Link href="/uslugi/biznes-v-onlayne">Сайт и две карточки — {tariffPrice(bundleTariff)} <ArrowUpRight size={17}/></Link></div></section>;
+  return <section className="pricing-followup"><div><span className="eyebrow">ПОСЛЕ УПАКОВКИ</span><h2>Нужна регулярная <em>работа?</em></h2><p>Сопровождение карточек — {tariffPrice(careTariff)}. Управление платным продвижением — {tariffPrice(adsTariff)}, бюджет площадки отдельно. Услуги вместе — от {formatPrice(monthlyCombinedFrom)}/мес.</p></div><div className="pricing-followup-links"><Link href="/uslugi/#monthly-tariffs">Все условия сопровождения <ArrowUpRight size={17}/></Link><Link href="/uslugi/biznes-v-onlayne/">Сайт и две карточки — {tariffPrice(bundleTariff)} <ArrowUpRight size={17}/></Link></div></section>;
 }
 
 export function BundlePricing({ compact = false }: { compact?: boolean }) {
@@ -62,7 +62,7 @@ export function BundlePricing({ compact = false }: { compact?: boolean }) {
       <p>{bundleTariff.description}</p>
       <div className="bundle-price"><strong>{tariffPrice(bundleTariff)}</strong><span>По отдельности — от {formatPrice(bundleSeparatePrice)}<br/>Экономия {formatPrice(bundleSaving)} при базовом составе пакета.</span></div>
       <Link className="button button-lime" href={contactHref(bundleTariff.id)}>{bundleTariff.cta} <ArrowUpRight size={17}/></Link>
-      {compact && <Link className="bundle-details-link" href="/uslugi/biznes-v-onlayne">Подробно о пакете <ArrowUpRight size={16}/></Link>}
+      {compact && <Link className="bundle-details-link" href="/uslugi/biznes-v-onlayne/">Подробно о пакете <ArrowUpRight size={16}/></Link>}
     </div>
     {!compact && <div className="bundle-includes"><span className="eyebrow">ЧТО ВЫ ПОЛУЧАЕТЕ</span><p className="bundle-composition">Продающий сайт от {formatPrice(siteTariffs[1].price)} + упаковка карточек на двух площадках за {formatPrice(mapTariffs[1].price)}.</p><ul>{bundleTariff.includes.map(item => <li key={item}><Check size={16} aria-hidden="true"/>{item}</li>)}</ul><div className="bundle-care">Дальнейшее сопровождение карточек — {formatPrice(careTariff.price)}/мес. Оформляется отдельно и не входит в первоначальную стоимость пакета.</div></div>}
   </section>;

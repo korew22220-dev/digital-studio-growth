@@ -14,7 +14,7 @@ const delivered = [
 export function MercedesCaseStudy() {
   return <>
     <section className="mercedes-case-hero">
-      <Link href="/kejsy" className="mercedes-case-back"><ArrowLeft size={16}/> Все кейсы</Link>
+      <Link href="/kejsy/" className="mercedes-case-back"><ArrowLeft size={16}/> Все кейсы</Link>
       <span className="eyebrow">РЕАЛИЗОВАННЫЙ ПРОЕКТ / РАЗРАБОТКА САЙТОВ</span>
       <div className="mercedes-case-title"><h1>Mercedes<br/><em>AMG.</em></h1><p>Сайт для специализированного автосервиса в Сочи.</p></div>
       <div className="mercedes-case-tags"><span>Веб-разработка</span><span>Автосервис</span><span>Сочи</span></div>

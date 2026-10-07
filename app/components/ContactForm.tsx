@@ -77,7 +77,7 @@ export function ContactForm() {
       {service === mapTariffs[0].id && <label>Площадка для оформления<select name="platform" defaultValue="2ГИС"><option>2ГИС</option><option>Яндекс Карты</option></select></label>}
       {service === "Предварительный аудит" && <label>Ссылка на сайт или карточку организации<input name="url" type="url" required maxLength={500} placeholder="https://example.ru"/></label>}
       <label>Коротко о задаче<textarea name="task" rows={3} maxLength={1000} placeholder="Что хотите улучшить или создать?"/></label>
-      <label className="consent"><input required type="checkbox"/>Я ознакомился(лась) с <Link href="/privacy">информацией об обработке данных</Link> и понимаю, что данные будут включены в подготовленное сообщение.</label>
+      <label className="consent"><input required type="checkbox"/>Я ознакомился(лась) с <Link href="/privacy/">информацией об обработке данных</Link> и понимаю, что данные будут включены в подготовленное сообщение.</label>
       <button className="button button-lime" type="submit" disabled={busy}>{busy ? "Подождите…" : staticHosting ? "Подготовить обращение" : "Отправить заявку"} <ArrowUpRight size={18}/></button>
       <p aria-live="polite">{status || (staticHosting
         ? "После подготовки сообщения выберите адресата и отправьте его сами. Автоматическая отправка заявки на этом сайте не подключена."
