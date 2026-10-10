@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./studio.css";
+import { StudioMotion } from "./components/StudioMotion";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://korew22220-dev.github.io/digital-studio-growth/";
@@ -15,4 +17,4 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ru"><body>{children}</body></html>}
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ru"><body>{children}<StudioMotion/></body></html>}
